@@ -2,7 +2,6 @@
 
 namespace Vyuldashev\Monolog\Loki;
 
-use Exception;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 
@@ -42,8 +41,7 @@ class LokiHandler extends AbstractProcessingHandler
             curl_setopt($ch, CURLOPT_POSTFIELDS, $formatted);
             curl_exec($ch);
             curl_close($ch);
-        }
-        catch(Exception $exception) {
+        } catch (\Exception $exception) {
 
         }
     }

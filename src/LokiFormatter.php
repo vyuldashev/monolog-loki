@@ -3,9 +3,9 @@
 namespace Vyuldashev\Monolog\Loki;
 
 use DateTime;
-use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\LineFormatter;
 
-class LokiFormatter implements FormatterInterface
+class LokiFormatter extends LineFormatter
 {
     /**
      * Formats a log record.
@@ -19,11 +19,11 @@ class LokiFormatter implements FormatterInterface
         return json_encode([
             'streams' => [
                 [
-                    'labels' => static::formatLabels($record),
+                    'labels' => $this->formatLabels($record),
                     'entries' => [
                         [
                             'ts' => $record['datetime']->format(DateTime::ATOM),
-                            'line' => $record['message'],
+                            'line' => parent::format($record),
                         ],
                     ],
                 ],
@@ -43,7 +43,7 @@ class LokiFormatter implements FormatterInterface
 
         foreach ($records as $record) {
             $streams[] = [
-                'labels' => json_encode(static::formatLabels($record), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                'labels' => json_encode($this->formatLabels($record), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
                 'entries' => [
                     [
                         'ts' => $record['datetime']->format(DateTime::ATOM),
@@ -59,7 +59,7 @@ class LokiFormatter implements FormatterInterface
         ], JSON_UNESCAPED_UNICODE);
     }
 
-    protected static function formatLabels(array $record)
+    protected function formatLabels(array $record)
     {
         $labels = array_merge(
             [
@@ -71,14 +71,14 @@ class LokiFormatter implements FormatterInterface
         );
 
         foreach ($labels as $name => $value) {
-            $escapedLabels[] = $name . '="' . static::escapeLabelValue($value) . '"';
+            $escapedLabels[] = $name . '="' . $this->escapeLabelValue($value) . '"';
         }
 
         return '{' . implode(',', $escapedLabels) . '}';
     }
 
-    protected static function escapeLabelValue($value)
+    protected function escapeLabelValue($value)
     {
-        return str_replace(["\\", "\n", '"'], ["\\\\", "\\n", "\\\""], $value);
+        return str_replace(["\\", "\n", '"'], ["\\\\", "\\n", "\\\""], $this->normalize($value));
     }
 }
