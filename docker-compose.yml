@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - sdnet
+
+  promtail:
+    image: grafana/promtail:latest
+    command: -config.file=/etc/promtail/docker-config.yaml
+    volumes:
+      - /var/log:/var/log
+    networks:
+      - sdnet
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: password
+    ports:
+      - "3000:3000"
+    networks:
+      - sdnet
+
+networks:
+  sdnet:

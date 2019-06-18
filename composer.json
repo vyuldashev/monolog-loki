@@ -1,0 +1,33 @@
+{
+  "name": "vyuldashev/monolog-loki",
+  "description": "Grafana Loki Handler for Monolog",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vladimir Yuldashev",
+      "email": "misterio92@gmail.com"
+    }
+  ],
+  "require": {
+    "monolog/monolog": "^1.24",
+    "ext-json": "*",
+    "ext-curl": "*"
+  },
+  "require-dev": {
+    "larapack/dd": "^1.1",
+    "phpunit/phpunit": "^8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vyuldashev\\Monolog\\Loki\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Vyuldashev\\Monolog\\Loki\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
