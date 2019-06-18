@@ -2,6 +2,7 @@
 
 namespace Vyuldashev\Monolog\Loki;
 
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 
@@ -14,6 +15,10 @@ class LokiHandler extends AbstractProcessingHandler
         $this->url = $url;
 
         parent::__construct($level, $bubble);
+
+        $this->setFormatter(
+            new LineFormatter("%channel%.%level_name%: %message% %context% %extra%\n")
+        );
     }
 
     /**
