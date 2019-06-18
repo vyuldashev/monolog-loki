@@ -2,6 +2,7 @@
 
 namespace Vyuldashev\Monolog\Loki;
 
+use Exception;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 
@@ -24,21 +25,26 @@ class LokiHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $formatted = $record['formatted'];
+        try {
+            $formatted = $record['formatted'];
 
-        echo $formatted . PHP_EOL;
+            echo $formatted . PHP_EOL;
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        /** @noinspection CurlSslServerSpoofingInspection */
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-        ]);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $formatted);
-        curl_exec($ch);
-        curl_close($ch);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $this->url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            /** @noinspection CurlSslServerSpoofingInspection */
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+            ]);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $formatted);
+            curl_exec($ch);
+            curl_close($ch);
+        }
+        catch(Exception $exception) {
+
+        }
     }
 }
